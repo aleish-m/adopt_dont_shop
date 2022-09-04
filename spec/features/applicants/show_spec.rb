@@ -192,10 +192,6 @@ RSpec.describe 'the applicants show' do
       expect(page).to have_content(@pet_6.name)
       expect(page).to_not have_content(@pet_4.name)
     end
-<<<<<<< HEAD
-    
-
-=======
->>>>>>> 01126d7e10526e0e2eb26f8a08b2fe6537c34267
   end
+  
 end
