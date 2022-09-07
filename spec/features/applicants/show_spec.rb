@@ -12,46 +12,53 @@ RSpec.describe 'the applicants show' do
     it "shows the name of the applicant" do
       visit "/applicants/#{@applicant.id}"
 
-      expect(page).to have_content(@applicant.first_name)
-      expect(page).to have_content(@applicant.last_name)
+      within("#applicant-#{@applicant.id}") do
+        expect(page).to have_content(@applicant.first_name)
+        expect(page).to have_content(@applicant.last_name)
+      end
 
     end
 
     it 'shows the full Address of the Applicant including street address, city, state, and zip code' do
       visit "/applicants/#{@applicant.id}"
 
-
-      expect(page).to have_content(@applicant.street_address)
-      expect(page).to have_content(@applicant.city)
-      expect(page).to have_content(@applicant.state)
-      expect(page).to have_content(@applicant.zip)
+      within("#applicant-#{@applicant.id}") do
+        expect(page).to have_content(@applicant.street_address)
+        expect(page).to have_content(@applicant.city)
+        expect(page).to have_content(@applicant.state)
+        expect(page).to have_content(@applicant.zip)
+      end
     end
 
     it 'shows the description of why the applicant says they would be a good home for this pets' do
       visit "/applicants/#{@applicant.id}"
 
-      expect(page).to have_content(@applicant.description)
+      within("#applicant-#{@applicant.id}") do
+        expect(page).to have_content(@applicant.description)
+      end
     end
 
     it 'names of all pets that this application is for (all names of pets should be links to their show page)' do
       visit "/applicants/#{@applicant.id}"
 
-      within("#applicant-#{@applicant.id}") do
+      within("#applicant-pets-#{@applicant.id}") do
         expect(page).to have_content(@pet.name)
         expect(page).to have_content(@pet_2.name)
-        expect(find_link("#{@pet.name}").visible?).to be true
-        expect(find_link("#{@pet_2.name}").visible?).to be true
+        expect(page).to have_link("#{@pet.name}")
+        expect(page).to have_link("#{@pet_2.name}")
+
+        click_link "#{@pet.name}"
       end
 
-      click_link "#{@pet.name}"
       expect(current_path).to eq("/pets/#{@pet.id}")
-
     end
 
     it 'The Applications status, either In Progress, Pending, Accepted, or Rejected' do
       visit "/applicants/#{@applicant.id}"
 
-      expect(page).to have_content(@applicant.status)
+      within("#applicant-#{@applicant.id}") do
+        expect(page).to have_content(@applicant.status)
+      end
     end
   end
 
@@ -76,49 +83,65 @@ RSpec.describe 'the applicants show' do
     it 'I see a section on the page to add a pet to this application' do
       visit "/applicants/#{@applicant.id}"
 
-      expect(page).to have_content("Add a Pet to This Application")
+      within("#aplicant-pet-search") do
+        expect(page).to have_content("Add a Pet to This Application")
+      end
     end
 
     it 'In that section I see an input where I can search for Pets by name' do
       visit "/applicants/#{@applicant.id}"
 
-      expect(page).to have_content("Search pet's name")
-      expect(page).to have_button("Search")
+      within("#aplicant-pet-search") do
+        expect(page).to have_content("Search pet's name")
+        expect(page).to have_button("Search")
+      end
     end
 
     it 'I fill in the field and click submit then I see the Pet I searched' do
       visit "/applicants/#{@applicant.id}"
 
-      fill_in "Search pet's name", with: "Frank"
-      click_on("Search")
+      within("#aplicant-pet-search") do
+        fill_in "Search pet's name", with: "Frank"
+        click_on("Search")
+      end
 
       expect(current_path).to eq("/applicants/#{@applicant.id}")
-      expect(page).to have_content(@pet_3.name)
-      expect(page).to_not have_content(@pet_4.name)
+
+      within("#aplicant-pet-search") do
+        expect(page).to have_content(@pet_3.name)
+        expect(page).to_not have_content(@pet_4.name)
+      end
     end
 
     it "When I search for a Pet by name I see the names Pets that match my search, next to each Pet's name I see a button to 'Adopt this Pet'" do
       visit "/applicants/#{@applicant.id}"
 
-      fill_in "Search pet's name", with: "Frank"
-      click_on("Search")
+      within("#aplicant-pet-search") do
+        fill_in "Search pet's name", with: "Frank"
+        click_on("Search")
 
-      expect(page).to have_button('Adopt this Pet')
-      expect(find_button({value:'Adopt this Pet', id:"#{@pet_3.id}"}).visible?).to be true
+        expect(page).to have_button('Adopt this Pet')
+        find_button({value:'Adopt this Pet', id:"#{@pet_3.id}"}).visible?
+      end
 
     end
 
     it "When I click one of these 'Adopt this Pet' buttons I am taken back to the application show page and I see the Pet I want to adopt listed on this application" do
 
-     visit "/applicants/#{@applicant.id}"
+      visit "/applicants/#{@applicant.id}"
 
-      fill_in "Search pet's name", with: "Frank"
-      click_on("Search")
-      click_on("Adopt this Pet")
+      within("#aplicant-pet-search") do
+        fill_in "Search pet's name", with: "Frank"
+        click_on("Search")
+        click_on("Adopt this Pet")
+      end
 
       expect(current_path).to eq("/applicants/#{@applicant.id}")
-      expect(page).to have_content(@pet_3.name)
-      expect(find_link("#{@pet_3.name}").visible?).to be true
+
+      within("#applicant-pets-#{@applicant.id}") do
+        expect(page).to have_content(@pet_3.name)
+        expect(page).to have_link("#{@pet_3.name}")
+      end
     end
 
     it "Before I have added one or more pets to the application, I do not see a section to submit my application." do
@@ -126,20 +149,24 @@ RSpec.describe 'the applicants show' do
       visit "/applicants/#{@applicant.id}"
 
       expect(page).to_not have_button('Apply for these Pets')
-
     end
 
     it "Once I have added one or more pets to the application, then I see a section to submit my application and in that section I see an input to enter why I would make a good owner for these pet(s)" do
 
       visit "/applicants/#{@applicant.id}"
 
-      fill_in "Search pet's name", with: "Frank"
-      click_on("Search")
-      click_on("Adopt this Pet")
+      within("#aplicant-pet-search") do
+        fill_in "Search pet's name", with: "Frank"
+        click_on("Search")
+        click_on("Adopt this Pet")
+      end
 
-      expect(page).to have_button('Apply for these Pets')
       expect(current_path).to eq("/applicants/#{@applicant.id}")
-      expect(page.has_field? "description").to be true
+
+      within("#applicant-submit") do
+        expect(page).to have_button('Apply for these Pets')
+        expect(page.has_field? "description").to be true
+      end
 
     end
 
@@ -147,21 +174,28 @@ RSpec.describe 'the applicants show' do
 
       visit "/applicants/#{@applicant.id}"
 
-      fill_in "Search pet's name", with: "Frank"
-      click_on("Search")
-      click_on("Adopt this Pet")
+      within("#aplicant-pet-search") do
+        fill_in "Search pet's name", with: "Frank"
+        click_on("Search")
+        click_on("Adopt this Pet")
+      end
 
-      fill_in "description", with: "I love cuddles with Frank"
-      click_on("Apply for these Pets")
+      within("#applicant-submit") do
+        fill_in "description", with: "I love cuddles with Frank"
+        click_on("Apply for these Pets")
+      end
 
-      expect(page).to have_content("Pending")
-      expect(page).to have_content(@pet_3.name)
-      expect(find_link("#{@pet_3.name}").visible?).to be true
+      expect(current_path).to eq("/applicants/#{@applicant.id}")
+
+      within("#applicant-#{@applicant.id}") do
+        expect(page).to have_content("Pending")
+        expect(page).to have_content(@pet_3.name)
+        expect(page).to have_link("#{@pet_3.name}")
+      end
 
       expect(page).to_not have_content("Search pet's name")
       expect(page).to_not have_button("Search")
       expect(page).to_not have_button('Apply for these Pets')
-
     end
 
     it "If I have not added any pets to the application, then I do not see a section to submit my application" do
@@ -175,27 +209,37 @@ RSpec.describe 'the applicants show' do
 
       visit "/applicants/#{@applicant.id}"
 
-      fill_in "Search pet's name", with: "Fra"
-      click_on("Search")
+      within("#aplicant-pet-search") do
+        fill_in "Search pet's name", with: "Fra"
+        click_on("Search")
+      end
 
       expect(current_path).to eq("/applicants/#{@applicant.id}")
-      expect(page).to have_content(@pet_3.name)
-      expect(page).to have_content(@pet_5.name)
-      expect(page).to_not have_content(@pet_4.name)
+
+      within("#aplicant-pet-search") do
+        expect(page).to have_content(@pet_3.name)
+        expect(page).to have_content(@pet_5.name)
+        expect(page).to_not have_content(@pet_4.name)
+      end
     end
 
     it 'I search for Pets by name and my search is case insensitive' do
 
       visit "/applicants/#{@applicant.id}"
 
-      fill_in "Search pet's name", with: "fR"
-      click_on("Search")
+      within("#aplicant-pet-search") do
+        fill_in "Search pet's name", with: "fR"
+        click_on("Search")
+      end
 
       expect(current_path).to eq("/applicants/#{@applicant.id}")
-      expect(page).to have_content(@pet_3.name)
-      expect(page).to have_content(@pet_5.name)
-      expect(page).to have_content(@pet_6.name)
-      expect(page).to_not have_content(@pet_4.name)
+
+      within("#aplicant-pet-search") do
+        expect(page).to have_content(@pet_3.name)
+        expect(page).to have_content(@pet_5.name)
+        expect(page).to have_content(@pet_6.name)
+        expect(page).to_not have_content(@pet_4.name)
+      end
     end
   end
 end
