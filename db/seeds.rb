@@ -3,7 +3,7 @@
 #
 # Examples:
 #
-Shelter.destroy_all
+# Shelter.destroy_all
 # Pet.destroy_all
 # Applicant.destroy_all
 
