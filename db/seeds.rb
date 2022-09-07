@@ -3,16 +3,17 @@
 #
 # Examples:
 #
-# Shelter.destroy_all
-# Pet.destroy_all
-# Applicant.destroy_all
+Shelter.destroy_all
+Pet.destroy_all
+Applicant.destroy_all
+ApplicantPet.destroy_all
 
-@shelter_1 = Shelter.create!(name: 'Aurora shelter', city: 'Aurora, CO', foster_program: false, rank: 9)
-@shelter_2 = Shelter.create!(name: 'RGV animal shelter', city: 'Harlingen, TX', foster_program: false, rank: 5)
-@shelter_3 = Shelter.create!(name: 'Fancy pets of Colorado', city: 'Denver, CO', foster_program: true, rank: 10)
+@shelter_1 = Shelter.create!(name: 'Aurora Shelter', city: 'Aurora, CO', foster_program: false, rank: 9)
+@shelter_2 = Shelter.create!(name: 'RGV Animal Shelter', city: 'Harlingen, TX', foster_program: false, rank: 5)
+@shelter_3 = Shelter.create!(name: 'Fancy Pets of Colorado', city: 'Denver, CO', foster_program: true, rank: 10)
 
 @applicant = Applicant.create!(first_name: 'John', last_name: 'Dough', street_address: '123 Fake Street', city: 'Denver',
-  state: 'CO', zip: 80205, description: "I'm awesome", status: 'pending')
+  state: 'CO', zip: 80205, description: "I'm awesome", status: 'Pending')
 @applicant_1 = Applicant.create!(first_name: 'Jimmy', last_name: 'Dough', street_address: '567 Fake Street', city: 'Denver',
   state: 'CO', zip: 80205, description: "I'm awesome", status: 'Pending')
 @applicant_2 = Applicant.create!(first_name: 'Johnny', last_name: 'Johnson', street_address: '17 Psuedo Street', city: 'Denver',

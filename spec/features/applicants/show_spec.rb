@@ -29,12 +29,12 @@ RSpec.describe 'the applicants show' do
       expect(page).to_not have_content(@applicant_2.first_name)
 
       visit "/applicants/#{@applicant_1.id}"
-      
+
       within("#applicant-#{@applicant_1.id}") do
         expect(page).to have_content(@applicant_1.street_address)
         expect(page).to have_content(@applicant_1.description)
       end
-      
+
       expect(page).to_not have_content(@applicant_2.first_name)
     end
 
@@ -51,20 +51,20 @@ RSpec.describe 'the applicants show' do
       expect(page).to_not have_content(@applicant_1.city)
 
       visit "/applicants/#{@applicant_1.id}"
-      
+
       within("#applicant-#{@applicant_1.id}") do
         expect(page).to have_content(@applicant_1.street_address)
         expect(page).to have_content(@applicant_1.city)
         expect(page).to have_content(@applicant_1.state)
         expect(page).to have_content(@applicant_1.zip)
       end
-      
+
       expect(page).to_not have_content(@applicant_2.zip)
     end
 
     it 'shows the description of why the applicant says they would be a good home for this pets' do
       visit "/applicants/#{@applicant.id}"
-      
+
       within("#applicant-#{@applicant.id}") do
         expect(page).to have_content(@applicant.description)
       end
@@ -73,10 +73,10 @@ RSpec.describe 'the applicants show' do
 
       visit "/applicants/#{@applicant_2.id}"
 
-      within("#applicant-#{@applicant.id}") do
+      within("#applicant-#{@applicant_2.id}") do
         expect(page).to have_content(@applicant_2.description)
       end
-      
+
       expect(page).to_not have_content(@applicant.description)
     end
 
@@ -92,7 +92,7 @@ RSpec.describe 'the applicants show' do
         click_link "#{@pet.name}"
       end
       expect(current_path).to eq("/pets/#{@pet.id}")
-      
+
       visit "/applicants/#{@applicant.id}"
 
       within("#applicant-pets-#{@applicant.id}") do
@@ -107,7 +107,7 @@ RSpec.describe 'the applicants show' do
       within("#applicant-#{@applicant.id}") do
         expect(page).to have_content(@applicant.status)
       end
-      
+
       expect(page).to_not have_content(@applicant_1.status)
       expect(page).to_not have_content(@applicant_2.status)
     end
@@ -308,14 +308,14 @@ RSpec.describe 'the applicants show' do
       end
 
       visit "/applicants/#{@applicant_2.id}"
-      
+
       within("#aplicant-pet-search") do
         fill_in "Search pet's name", with: "Fra"
         click_on("Search")
       end
 
       expect(current_path).to eq("/applicants/#{@applicant_2.id}")
-      
+
       within("#aplicant-pet-search") do
         expect(page).to have_content(@pet_3.name)
         expect(page).to have_content(@pet_5.name)
@@ -349,7 +349,7 @@ RSpec.describe 'the applicants show' do
       end
 
       expect(current_path).to eq("/applicants/#{@applicant_2.id}")
-      
+
       within("#aplicant-pet-search") do
         expect(page).to have_content(@pet_3.name)
         expect(page).to have_content(@pet_5.name)
