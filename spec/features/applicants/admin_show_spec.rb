@@ -166,8 +166,8 @@ RSpec.describe 'the applicants show' do
         expect(page).to_not have_content(@applicant_1.first_name)
         expect(page).to_not have_content(@applicant_1.last_name)
         expect(page).to_not have_content(@applicant_1.street_address)
-
       end
+      
       it 'I visit another applications show page and I do not see that same pet has been rejected/accepted on this application' do
 
         visit "/admin/applicants/#{@applicant.id}"
