@@ -25,19 +25,20 @@ RSpec.describe 'the admin_shelters index' do
 
       visit '/admin/shelters'
 
-      expect(@shelter_2.name).to appear_before(@shelter_3.name)
-      expect(@shelter_2.name).to appear_before(@shelter_1.name)
-      expect(@shelter_3.name).to appear_before(@shelter_1.name)
-
+      within("#shelters-list") do
+        expect(@shelter_2.name).to appear_before(@shelter_3.name)
+        expect(@shelter_2.name).to appear_before(@shelter_1.name)
+        expect(@shelter_3.name).to appear_before(@shelter_1.name)
+      end
     end
-
-
 
     it 'I see a section for Shelters with Pending Applications' do
 
       visit '/admin/shelters'
 
-      expect(page).to have_content("Shelters with Pending Applications")
+      within("#pending-shelters") do
+        expect(page).to have_content("Shelters with Pending Applications")
+      end
     end
 
 
